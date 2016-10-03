@@ -12,8 +12,10 @@ namespace Pacraft_c____
     {
         static void Main(string[] args)
         {
-        //   DX. SetOutApplicationLogValidFlag(0);
-      //      DX.SetUseDirectDrawFlag(DX.FALSE);
+
+            DX.SetZBufferBitDepth(32);
+            //   DX. SetOutApplicationLogValidFlag(0);
+            //      DX.SetUseDirectDrawFlag(DX.FALSE);
             DX.ChangeWindowMode(1);
             DX.SetGraphMode(1280, 720, 16);//縦横比と画面サイズの設定
 
@@ -29,37 +31,24 @@ namespace Pacraft_c____
 
             #region CreateTerrain
 
-            BlockTextures.blockTextureArrey[1] = new BlockTexture(hdl, hdl, hdl, hdl, hdl, hdl);
+            BlockTextures.blockTextureArrey[1] = new BlockTexture();
 
-            //誤視聴ありがとナス！
-            Chunk[] chunk = new Chunk[64];// new Chunk(new Vector(0, 0, 0));
-            for (int chunk_x = 0; chunk_x < 8; chunk_x++)
-            {
-                for (int chunk_z = 0; chunk_z < 8; chunk_z++)
-                {
-                    chunk[chunk_x * 8 + chunk_z] = new Chunk(new Vector(chunk_x, 0, chunk_z));
-                    for (int cx = 0; cx < 16; cx++)
-                        for (int cy = 0; cy < 4; cy++)
-                            for (int cz = 0; cz < 16; cz++)
-                            {
-                                chunk[chunk_x * 8 + chunk_z].SetBlock(new Vector(cx, cy, cz), 1);
-                            }
-                    chunk[chunk_x * 8 + chunk_z].SendGPU();
-
-                }
-            }
-            
+            World w = new World();
+          
 
             #endregion
 
             float x = 0;
             float y = 2.1f;
-            float z = -2;
+            float z = 0;
             float ay = 0;
-            float PlayerMoveSpped = 0.05f;
+            float PlayerMoveSpped = 0.5f;
 
             while (true)
             {
+DX.                SetupCamera_Perspective((float)(Math.PI/180*70.0f));
+
+
                 DX.ClearDrawScreen();
 
                 #region PlayerMove
@@ -89,11 +78,13 @@ namespace Pacraft_c____
                 if (DX.CheckHitKey(DX.KEY_INPUT_DOWN) == 1) y -=PlayerMoveSpped;
                 #endregion
 
-                DX.SetCameraPositionAndAngle(new Vector(x, y, z), 0, ay, 0);
-                DX.SetCameraNearFar(0.1f, 100);
-                foreach(var c in chunk)
-                c.Draw();
+              //  x += 1;
 
+                w.SetPlayerPosition(new Vector(x, y, z));
+
+                DX.SetCameraPositionAndAngle(new Vector(x, y, z), 0, ay, 0);
+                DX.SetCameraNearFar(0.01f, 256);
+                w.Draw();
 
 
                 DX.ScreenFlip();

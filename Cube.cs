@@ -95,6 +95,12 @@ namespace Pacraft_c____
         {
           this.Textures=  this.Textures.Select(n =>n= Ghdl).ToArray();
         }
+
+        public void SetColor(Color c)
+        {
+            foreach (var n in Surface)
+                n.SetColor(c);
+        }
     }
 }
 
